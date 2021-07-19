@@ -2,6 +2,7 @@ package manaki.plugin.skybattleclient.executor;
 
 
 import manaki.plugin.skybattleclient.SkyBattleClient;
+import manaki.plugin.skybattleclient.gui.room.team.TeamIcon;
 import manaki.plugin.skybattleclient.request.JoinRequest;
 import manaki.plugin.skybattleclient.request.StartRequest;
 import org.bukkit.Bukkit;
@@ -11,6 +12,9 @@ import org.bukkit.plugin.Plugin;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class Executor {
 
@@ -18,6 +22,10 @@ public class Executor {
 
     public Executor(Plugin plugin) {
         this.plugin = plugin;
+    }
+
+    public void sendStart(Map<TeamIcon, Set<Player>> players) {
+
     }
 
     public void sendStart(StartRequest sr) {

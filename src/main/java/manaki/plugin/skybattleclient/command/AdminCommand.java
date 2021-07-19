@@ -27,7 +27,11 @@ public class AdminCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String j, @NotNull String[] args) {
 
         try {
-            if (args[0].equalsIgnoreCase("start")) {
+            if (args[0].equalsIgnoreCase("reload")) {
+                SkyBattleClient.get().reloadConfig();
+                sender.sendMessage("§aReloaded");
+            }
+            else if (args[0].equalsIgnoreCase("start")) {
                 var id = args[1];
                 List<Team> teams = Lists.newArrayList();
 
@@ -65,6 +69,7 @@ public class AdminCommand implements CommandExecutor {
 
     public void sendHelp(CommandSender sender) {
         sender.sendMessage("");
+        sender.sendMessage("§a/skybattleclient(sbc) reload");
         sender.sendMessage("§a/skybattleclient(sbc) start <battleId> <player1>:<player2>;<player3>:<player4>");
         sender.sendMessage("§a/skybattleclient(sbc) join <player>");
     }

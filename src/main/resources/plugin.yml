@@ -7,3 +7,5 @@ commands:
     permission: skybattleclient.admin
     aliases:
       - sbc
+  skybattle:
+    aliases: [chientruong]
