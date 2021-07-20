@@ -54,8 +54,7 @@ public class Rooms {
 
                 // Check start (counting)
                 if (room.canStarted()) {
-                    room.setStartCountdown(true);
-                    return;
+                    if (!room.isCountdowning()) room.setStartCountdown(true);
                 }
                 else room.setStartCountdown(false);
 
@@ -72,10 +71,13 @@ public class Rooms {
 
                     // Check start
                     if (System.currentTimeMillis() - room.getStartCount() >= START_COUNT) {
+                        for (Player p : room.getPlayers()) {
+                            p.closeInventory();
+                            p.sendTitle("", "§aĐang bắt đầu...", 0, 100, 0);
+                        }
+
                         // Start
-                        Tasks.sync(() -> {
-                            SkyBattleClient.get().getExecutor().sendStart(room.getTeamPlayers());
-                        });
+                        SkyBattleClient.get().getExecutor().sendStart(room);
 
                         // Remove room
                         room.setDelete(true);
@@ -84,6 +86,7 @@ public class Rooms {
                         this.cancel();
                         return;
                     }
+                    return;
                 }
 
             }
@@ -134,6 +137,7 @@ public class Rooms {
             lore.add("§b§oĐếm ngược bắt đầu §b§l§o" + (START_COUNT - (System.currentTimeMillis() - room.getStartCount())) / 1000 + "s");
         }
 
+        is.setAmount(Math.max(1, room.getPlayers().size()));
         lore.add("");
         lore.add("§eHình thức: §f" + room.getBattleType().getName());
         lore.add("§eLoại: §f" + room.getGameType().getName());

@@ -1,13 +1,10 @@
 package manaki.plugin.skybattleclient.gui.room;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import manaki.plugin.skybattleclient.gui.room.team.TeamIcon;
-import manaki.plugin.skybattleclient.team.Team;
 import org.bukkit.entity.Player;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -102,11 +99,12 @@ public class Room {
     }
 
     public boolean canStarted() {
-        return !this.isCountdowning() && (this.players.size() == getMaxPlayers());
+        return this.getPlayers().size() == getMaxPlayers();
     }
 
     public int getMaxPlayers() {
-        return this.battleType.getTeamSize() * 8;
+//        return this.battleType.getTeamSize() * 8;
+        return 2;
     }
 
     public boolean isCountdowning() {

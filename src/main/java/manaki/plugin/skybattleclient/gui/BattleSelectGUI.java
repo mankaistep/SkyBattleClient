@@ -4,6 +4,7 @@ import manaki.plugin.skybattleclient.SkyBattleClient;
 import manaki.plugin.skybattleclient.gui.holder.GUIHolder;
 import manaki.plugin.skybattleclient.gui.icon.Icons;
 import manaki.plugin.skybattleclient.gui.model.BattleIconModel;
+import manaki.plugin.skybattleclient.request.JoinRequest;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -35,6 +36,19 @@ public class BattleSelectGUI {
     public static void onClick(InventoryClickEvent e, Player p) {
         if (!(e.getInventory().getHolder() instanceof BattleGUIHolder)) return;
         int slot = e.getSlot();
+
+        // Quit button
+        if (slot == Icons.QUIT_ICON.getSlot()) {
+            p.closeInventory();
+            return;
+        }
+
+        // Spectator button
+        if (slot == Icons.INFO_ICON.getSlot()) {
+            SkyBattleClient.get().getExecutor().sendJoin(new JoinRequest(p.getName(), ""));
+            p.closeInventory();
+            return;
+        }
 
         for (BattleIconModel bim : Icons.BATTLE_ICONS.values()) {
             if (bim.getSlot() == slot) {

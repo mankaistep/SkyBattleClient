@@ -38,7 +38,7 @@ public class TeamSelectGUI {
             TeamIcon.VIII, 34);
 
     public static void open(Player player, Room room) {
-        Inventory inv = Bukkit.createInventory(new TeamGUIHolder(room), 54, "§0§lCHỌN ĐỘI (KHÔNG CHỌN SẼ TỰ XẾP NGẪU NHIÊN)");
+        Inventory inv = Bukkit.createInventory(new TeamGUIHolder(room), 54, "§0§lCHỌN ĐỘI");
         player.openInventory(inv);
         player.playSound(player.getLocation(), Sound.BLOCK_WOODEN_BUTTON_CLICK_ON, 1, 1);
 
