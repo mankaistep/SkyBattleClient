@@ -87,7 +87,7 @@ public class TeamSelectGUI {
         var room = holder.getRoom();
 
         // Check size
-        if (room.getPlayers(ti).size() >= room.getBattleType().getTeamSize()) {
+        if (room.getTeam(p) != ti && room.getPlayers(ti).size() >= room.getBattleType().getTeamSize()) {
             p.sendMessage("§cĐội đã đầy!");
             return;
         }
