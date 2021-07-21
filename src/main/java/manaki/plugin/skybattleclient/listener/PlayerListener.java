@@ -26,7 +26,6 @@ public class PlayerListener implements Listener {
 
         // Check if start out
         if (p.hasMetadata("skybattle.prepare-start")) {
-            System.out.println("asdasijdiasoidasdasdasdasdas");
             e.setQuitMessage(null);
         }
     }
