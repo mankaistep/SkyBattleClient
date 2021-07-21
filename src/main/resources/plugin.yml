@@ -8,4 +8,5 @@ commands:
     aliases:
       - sbc
   skybattle:
+    permission: skybattle.player
     aliases: [chientruong]

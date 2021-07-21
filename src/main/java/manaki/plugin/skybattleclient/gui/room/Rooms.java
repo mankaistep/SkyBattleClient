@@ -3,9 +3,11 @@ package manaki.plugin.skybattleclient.gui.room;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import manaki.plugin.skybattleclient.SkyBattleClient;
+import manaki.plugin.skybattleclient.gui.icon.Icons;
 import manaki.plugin.skybattleclient.gui.room.team.TeamIcon;
 import mk.plugin.santory.utils.ItemStackManager;
 import mk.plugin.santory.utils.Tasks;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -78,6 +80,11 @@ public class Rooms {
 
                         // Start
                         SkyBattleClient.get().getExecutor().sendStart(room);
+
+                        // Broadcast
+                        for (Player p : Bukkit.getOnlinePlayers()) {
+                            p.sendMessage("§2[§aSkybattle§2] §aPhòng #" + room.getId() + " §fvới chiến trường §c" + Icons.BATTLE_ICONS.get(room.getBattleId()).getName() + " §fđã bắt đầu với §a" + room.getPlayers().size() + " người chơi!");
+                        }
 
                         // Remove room
                         room.setDelete(true);

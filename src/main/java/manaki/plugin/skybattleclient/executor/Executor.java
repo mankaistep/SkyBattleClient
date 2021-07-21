@@ -15,6 +15,7 @@ import manaki.plugin.skybattleclient.team.util.Teams;
 import mk.plugin.santory.utils.Tasks;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 
 import java.io.ByteArrayOutputStream;
@@ -80,6 +81,17 @@ public class Executor {
     }
 
     public void sendStart(StartRequest sr) {
+        // Add tag check
+        for (Team t : sr.getTeams()) {
+            for (TeamPlayer tp : t.getPlayers()) {
+                var pn = tp.getName();
+                var p = Bukkit.getPlayer(pn);
+                if (p != null) {
+                    p.setMetadata("skybattle.prepare-start", new FixedMetadataValue(SkyBattleClient.get(), ""));
+                }
+            }
+        }
+
         // Send request to game server
         var rs = sr.toString();
         var stream = new ByteArrayOutputStream();

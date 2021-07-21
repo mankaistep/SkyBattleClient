@@ -9,6 +9,7 @@ import manaki.plugin.skybattleclient.gui.room.Rooms;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -16,10 +17,18 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public class PlayerListener implements Listener {
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onQuit(PlayerQuitEvent e) {
         var p = e.getPlayer();
+
+        // Remove from rooms
         Rooms.removePlayer(p);
+
+        // Check if start out
+        if (p.hasMetadata("skybattle.prepare-start")) {
+            System.out.println("asdasijdiasoidasdasdasdasdas");
+            e.setQuitMessage(null);
+        }
     }
 
     @EventHandler

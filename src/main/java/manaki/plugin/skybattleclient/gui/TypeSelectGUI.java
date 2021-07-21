@@ -2,6 +2,7 @@ package manaki.plugin.skybattleclient.gui;
 
 import manaki.plugin.skybattleclient.SkyBattleClient;
 import manaki.plugin.skybattleclient.gui.holder.GUIHolder;
+import manaki.plugin.skybattleclient.gui.icon.Icons;
 import manaki.plugin.skybattleclient.gui.room.BattleType;
 import manaki.plugin.skybattleclient.gui.room.GameType;
 import manaki.plugin.skybattleclient.gui.room.Rooms;
@@ -41,6 +42,10 @@ public class TypeSelectGUI {
 
         var room = Rooms.createRoom(holder.getBattleId(), holder.getGameType(), bt, p);
         TeamSelectGUI.open(p, room);
+
+        // Broadcast
+        var bname = Icons.BATTLE_ICONS.get(room.getBattleId()).getName();
+        Utils.broadcast("§2[§aSkybattle§2] §aPhòng #" + room.getId() + " §fvới chiến trường §c" + bname + " §fđược tạo bởi §a" + p.getName());
     }
 
     private static BattleType fromSlot(int slot) {
