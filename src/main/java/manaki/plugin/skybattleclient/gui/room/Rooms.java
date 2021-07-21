@@ -95,6 +95,24 @@ public class Rooms {
         return room;
     }
 
+    public static boolean hasRoom(Player p) {
+        for (List<Room> list : rooms.values()) {
+            for (Room r : list) {
+                if (r.getPlayers().contains(p)) return true;
+            }
+        }
+        return false;
+    }
+
+    public static Room getRoom(Player p) {
+        for (List<Room> list : rooms.values()) {
+            for (Room r : list) {
+                if (r.getPlayers().contains(p)) return r;
+            }
+        }
+        return null;
+    }
+
     public static List<Room> getRooms(String battleId) {
         if (!rooms.containsKey(battleId)) rooms.put(battleId, Lists.newArrayList());
         return rooms.get(battleId);
@@ -116,8 +134,8 @@ public class Rooms {
         }
     }
 
-    public static ItemStack getIcon(Room room) {
-        var is = new ItemStack(Material.WHITE_BED);
+    public static ItemStack getIcon(Room room, ItemStack is) {
+        if (is == null) is = new ItemStack(Material.WHITE_BED);
         var ism = new ItemStackManager(SkyBattleClient.get(), is);
         List<String> lore = Lists.newArrayList();
 

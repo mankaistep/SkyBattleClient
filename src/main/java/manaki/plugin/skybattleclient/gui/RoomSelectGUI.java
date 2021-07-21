@@ -29,7 +29,6 @@ public class RoomSelectGUI {
     public static void open(Player player, String battleId) {
         Inventory inv = Bukkit.createInventory(new RoomGUIHolder(battleId), 54, "§0§lCHỌN PHÒNG");
         player.openInventory(inv);
-        player.playSound(player.getLocation(), Sound.BLOCK_WOODEN_BUTTON_CLICK_ON, 1, 1);
 
         Bukkit.getScheduler().runTaskAsynchronously(SkyBattleClient.get(), () -> {
             for (int i = 0 ; i < inv.getSize() ; i++) if (!ROOM_SLOTS.contains(i)) inv.setItem(i, Utils.getBackIcon());
@@ -49,7 +48,7 @@ public class RoomSelectGUI {
                     var rooms = Rooms.getRooms(battleId);
                     for (int i = 0; i < rooms.size(); i++) {
                         var room = rooms.get(i);
-                        inv.setItem(ROOM_SLOTS.get(i), Rooms.getIcon(room));
+                        inv.setItem(ROOM_SLOTS.get(i), Rooms.getIcon(room, inv.getItem(ROOM_SLOTS.get(i))));
                     }
                 }
             }.runTaskTimerAsynchronously(SkyBattleClient.get(), 0, 20);

@@ -4,6 +4,7 @@ import manaki.plugin.skybattleclient.SkyBattleClient;
 import manaki.plugin.skybattleclient.gui.holder.GUIHolder;
 import manaki.plugin.skybattleclient.gui.icon.Icons;
 import manaki.plugin.skybattleclient.gui.model.BattleIconModel;
+import manaki.plugin.skybattleclient.gui.room.Rooms;
 import manaki.plugin.skybattleclient.request.JoinRequest;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -16,6 +17,14 @@ import org.jetbrains.annotations.NotNull;
 public class BattleSelectGUI {
 
     public static void open(Player player) {
+        // If have room
+        if (Rooms.hasRoom(player)) {
+            var room = Rooms.getRoom(player);
+            TeamSelectGUI.open(player, room);
+            return;
+        }
+
+        // Open
         Inventory inv = Bukkit.createInventory(new BattleGUIHolder(), 27, "§0§lCHỌN CHIẾN TRƯỜNG");
         player.openInventory(inv);
         player.playSound(player.getLocation(), Sound.BLOCK_WOODEN_BUTTON_CLICK_ON, 1, 1);

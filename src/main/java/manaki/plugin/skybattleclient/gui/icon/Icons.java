@@ -26,7 +26,8 @@ public class Icons {
         for (String bId : config.getConfigurationSection("battle").getKeys(false)){
             int slot = config.getInt("battle." + bId + ".slot");
             var icon = ItemBuilder.buildItem(config.getConfigurationSection("battle." + bId + ".item"));
-            BATTLE_ICONS.put(bId, new BattleIconModel(bId, slot, icon));
+            var name = config.getString("battle." + bId + ".name", "Null");
+            BATTLE_ICONS.put(bId, new BattleIconModel(bId, name, slot, icon));
         }
 
         BACKGROUND_ICON = new IconModel(config.getIntegerList("gui.background.slots"),

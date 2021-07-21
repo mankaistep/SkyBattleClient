@@ -1,5 +1,6 @@
 battle:
   battle1:
+    name: 'Đảo trên không'
     slot: 0
     item:
       name: '&a&lMap Đảo trên không'
