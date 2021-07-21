@@ -83,7 +83,7 @@ public class Rooms {
 
                         // Broadcast
                         for (Player p : Bukkit.getOnlinePlayers()) {
-                            p.sendMessage("§2[§a§l/skybattle§2] §aPhòng #" + room.getId() + " §fvới chiến trường §c" + Icons.BATTLE_ICONS.get(room.getBattleId()).getName() + " §fđã bắt đầu với §a" + room.getPlayers().size() + " người chơi!");
+                            p.sendMessage("§2[§a§l/skybattle§2] §aPhòng #" + room.getId() + " §fvới chiến trường §a" + Icons.BATTLE_ICONS.get(room.getBattleId()).getName() + " §fđã bắt đầu với §a" + room.getPlayers().size() + " người chơi!");
                         }
 
                         // Remove room

@@ -45,7 +45,7 @@ public class TypeSelectGUI {
 
         // Broadcast
         var bname = Icons.BATTLE_ICONS.get(room.getBattleId()).getName();
-        Utils.broadcast("§2[§a§l/skybattle§2] §aPhòng #" + room.getId() + " §fvới chiến trường §c" + bname + " §fđược tạo bởi §a" + p.getName());
+        Utils.broadcast("§2[§a§l/skybattle§2] §aPhòng #" + room.getId() + " §fvới chiến trường §a" + bname + " §fđược tạo bởi §a" + p.getName());
     }
 
     private static BattleType fromSlot(int slot) {
