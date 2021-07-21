@@ -103,8 +103,7 @@ public class Room {
     }
 
     public int getMaxPlayers() {
-//        return this.battleType.getTeamSize() * 8;
-        return 1;
+        return this.battleType.getTeamSize() * 8;
     }
 
     public boolean isCountdowning() {
