@@ -1,11 +1,13 @@
 package manaki.plugin.skybattleclient.listener;
 
+import manaki.plugin.skybattleclient.SkyBattleClient;
 import manaki.plugin.skybattleclient.gui.BattleSelectGUI;
 import manaki.plugin.skybattleclient.gui.RoomSelectGUI;
 import manaki.plugin.skybattleclient.gui.TeamSelectGUI;
 import manaki.plugin.skybattleclient.gui.TypeSelectGUI;
 import manaki.plugin.skybattleclient.gui.holder.GUIHolder;
 import manaki.plugin.skybattleclient.gui.room.Rooms;
+import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -27,6 +29,7 @@ public class PlayerListener implements Listener {
         // Check if start out
         if (p.hasMetadata("skybattle.prepare-start")) {
             e.setQuitMessage(null);
+            Bukkit.getScheduler().runTask(SkyBattleClient.get(), () -> p.removeMetadata("skybattle.prepare-start", SkyBattleClient.get()));
         }
     }
 
