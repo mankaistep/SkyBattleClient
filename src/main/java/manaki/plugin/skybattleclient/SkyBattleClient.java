@@ -89,7 +89,7 @@ public class SkyBattleClient extends JavaPlugin implements @NotNull PluginMessag
                 }, 100);
 
                 SkyBattleClient.get().getLogger().info("Added tag to " + name);
-            }, 2);
+            }, 20);
 
         }
     }
