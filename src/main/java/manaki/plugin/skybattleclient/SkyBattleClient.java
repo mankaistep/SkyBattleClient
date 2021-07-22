@@ -6,11 +6,17 @@ import manaki.plugin.skybattleclient.executor.Executor;
 import manaki.plugin.skybattleclient.gui.holder.GUIHolder;
 import manaki.plugin.skybattleclient.gui.icon.Icons;
 import manaki.plugin.skybattleclient.listener.PlayerListener;
+import manaki.plugin.skybattleclient.request.util.Requests;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
 
 public class SkyBattleClient extends JavaPlugin implements @NotNull PluginMessageListener {
 
@@ -55,7 +61,36 @@ public class SkyBattleClient extends JavaPlugin implements @NotNull PluginMessag
     }
 
     @Override
-    public void onPluginMessageReceived(@NotNull String s, @NotNull Player player, @NotNull byte[] bytes) {
+    public void onPluginMessageReceived(@NotNull String channel, @NotNull Player player, @NotNull byte[] msg) {
+        if (!channel.equals(CHANNEL)) return;
 
+        var in = new DataInputStream(new ByteArrayInputStream(msg));
+        String type = null;
+        String data = null;
+        try {
+            type = in.readUTF();
+            data = in.readUTF();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Start request
+        if (type.equalsIgnoreCase("skybattle-quit")) {
+            var qr = Requests.parseQuit(data);
+            var name = qr.getPlayer();
+
+            Bukkit.getScheduler().runTaskLater(this, () -> {
+                var p = Bukkit.getPlayer(name);
+                if (p == null) return;
+
+                p.setMetadata("skybattle-quit", new FixedMetadataValue(SkyBattleClient.get(), ""));
+                Bukkit.getScheduler().runTaskLater(SkyBattleClient.get(), () -> {
+                    p.removeMetadata("skybattle-quit", SkyBattleClient.get());
+                }, 100);
+
+                SkyBattleClient.get().getLogger().info("Added tag to " + name);
+            }, 2);
+
+        }
     }
 }
