@@ -1,12 +1,15 @@
 package manaki.plugin.skybattleclient.listener;
 
 import manaki.plugin.skybattleclient.SkyBattleClient;
+import manaki.plugin.skybattleclient.game.Notifications;
 import manaki.plugin.skybattleclient.gui.BattleSelectGUI;
 import manaki.plugin.skybattleclient.gui.RoomSelectGUI;
 import manaki.plugin.skybattleclient.gui.TeamSelectGUI;
 import manaki.plugin.skybattleclient.gui.TypeSelectGUI;
 import manaki.plugin.skybattleclient.gui.holder.GUIHolder;
 import manaki.plugin.skybattleclient.gui.room.Rooms;
+import manaki.plugin.skybattleclient.rank.player.RankedPlayers;
+import manaki.plugin.skybattleclient.rank.reward.RankRewards;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -15,13 +18,23 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 public class PlayerListener implements Listener {
 
+    @EventHandler
+    public void onJoinNoti(PlayerJoinEvent e) {
+        var p = e.getPlayer();
+        Notifications.show(p);
+    }
+
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onQuit(PlayerQuitEvent e) {
         var p = e.getPlayer();
+
+        // Ranked cache remove
+        RankedPlayers.removeCache(p.getName());
 
         // Remove from rooms
         Rooms.removePlayer(p);
@@ -45,6 +58,7 @@ public class PlayerListener implements Listener {
         RoomSelectGUI.onClick(e, p);
         TeamSelectGUI.onClick(e, p);
         TypeSelectGUI.onClick(e, p);
+        RankRewards.onClick(e, p);
     }
 
     @EventHandler

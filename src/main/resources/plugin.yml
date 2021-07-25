@@ -2,6 +2,8 @@ name: SkyBattleClient
 version: 1.0
 api-version: 1.16
 main: manaki.plugin.skybattleclient.SkyBattleClient
+softdepend:
+  - PlaceholderAPI
 commands:
   skybattleclient:
     permission: skybattleclient.admin

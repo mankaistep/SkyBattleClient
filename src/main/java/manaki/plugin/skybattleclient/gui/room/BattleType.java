@@ -36,4 +36,11 @@ public enum BattleType {
         ism.setName("§a§l" + this.getName());
         return is;
     }
+
+    public static BattleType parse(int value) {
+        for (BattleType bt : values()) {
+            if (bt.getTeamSize() == value) return bt;
+        }
+        return null;
+    }
 }

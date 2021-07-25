@@ -1,3 +1,38 @@
+reward-gui-size: 9
+reward:
+  v1:
+    dong:
+      slot: 0
+      rank-type: BRONZE
+      rank-grade: I
+      commands:
+        - '[consolecmd] bc Dong I 1'
+      desc:
+        - '&f&oPhần thưởng bậc xếp hạng Đồng I'
+        - '&a x10 Đá cường hóa'
+        - '&a x1 Chìa xanh'
+  v2:
+    dong:
+      slot: 0
+      rank-type: BRONZE
+      rank-grade: I
+      commands:
+        - '[consolecmd] bc Dong I 2'
+      desc:
+        - '&f&oPhần thưởng bậc xếp hạng Đồng I'
+        - '&a x10 Đá cường hóa'
+        - '&a x1 Chìa xanh'
+  v3:
+    dong:
+      slot: 0
+      rank-type: BRONZE
+      rank-grade: I
+      commands:
+        - '[consolecmd] bc Dong I 3'
+      desc:
+        - '&f&oPhần thưởng bậc xếp hạng Đồng I'
+        - '&a x10 Đá cường hóa'
+        - '&a x1 Chìa xanh'
 battle:
   battle1:
     name: 'Đảo trên không'
