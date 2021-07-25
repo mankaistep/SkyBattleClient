@@ -1,5 +1,6 @@
 package manaki.plugin.skybattleclient;
 
+import com.google.common.collect.Sets;
 import com.google.gson.GsonBuilder;
 import manaki.plugin.skybattleclient.command.AdminCommand;
 import manaki.plugin.skybattleclient.command.PlayerCommand;
@@ -8,6 +9,7 @@ import manaki.plugin.skybattleclient.game.Notifications;
 import manaki.plugin.skybattleclient.game.PlayerResult;
 import manaki.plugin.skybattleclient.game.notification.DownNotification;
 import manaki.plugin.skybattleclient.game.notification.UpNotification;
+import manaki.plugin.skybattleclient.game.notification.i.Notificatable;
 import manaki.plugin.skybattleclient.gui.holder.GUIHolder;
 import manaki.plugin.skybattleclient.gui.icon.Icons;
 import manaki.plugin.skybattleclient.gui.room.BattleType;
@@ -27,6 +29,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.Map;
 
 public class SkyBattleClient extends JavaPlugin implements @NotNull PluginMessageListener {
 
@@ -55,9 +58,15 @@ public class SkyBattleClient extends JavaPlugin implements @NotNull PluginMessag
 
     @Override
     public void onDisable() {
+        // Close GUIs
         for (Player p : Bukkit.getOnlinePlayers()) {
             p.getOpenInventory();
             if (p.getOpenInventory().getTopInventory().getHolder() instanceof GUIHolder) p.closeInventory();
+        }
+
+        // Do noti
+        for (var name : Sets.newHashSet(Notifications.getData().keySet())) {
+            RankedPlayers.doNoti(name);
         }
     }
 
@@ -113,6 +122,8 @@ public class SkyBattleClient extends JavaPlugin implements @NotNull PluginMessag
             String finalData = data;
             Tasks.async(() -> {
                 var pr = new GsonBuilder().create().fromJson(finalData, PlayerResult.class);
+                if (!pr.isRanked()) return;
+
                 BattleType bt = BattleType.parse(pr.getType());
 
                 var name = pr.getName();
@@ -121,9 +132,9 @@ public class SkyBattleClient extends JavaPlugin implements @NotNull PluginMessag
 
                 // Add or subtract
                 if (top <= 4) {
-                    Notifications.add(name, new UpNotification(bt, top, pr.isWinner()));
+                    Notifications.add(name, new UpNotification(pr, bt, top, pr.isWinner()));
                 }
-                else Notifications.add(name, new DownNotification(bt, top));
+                else Notifications.add(name, new DownNotification(pr, bt, top));
 
             });
         }

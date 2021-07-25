@@ -10,6 +10,10 @@ public class Notifications {
 
     private static Map<String, Notificatable> data = Maps.newConcurrentMap();
 
+    public static Map<String, Notificatable> getData() {
+        return data;
+    }
+
     public static void add(String name, Notificatable noti) {
         data.put(name, noti);
     }
@@ -26,8 +30,12 @@ public class Notifications {
         data.remove(p.getName());
     }
 
-    public static Notificatable get(Player p) {
-        return data.get(p.getName());
+    public static Notificatable get(String name) {
+        return data.get(name);
+    }
+
+    public static void remove(String name) {
+        data.remove(name);
     }
 
 }

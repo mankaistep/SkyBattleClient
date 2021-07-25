@@ -29,48 +29,7 @@ public class PlayerListener implements Listener {
         var p = e.getPlayer();
         if (!Notifications.has(p.getName())) return;
         Bukkit.getScheduler().runTaskLaterAsynchronously(SkyBattleClient.get(), () -> {
-            var noti = Notifications.get(p);
-            var rp = RankedPlayers.get(p.getName());
-
-            // Show
-            Notifications.show(p);
-
-            // Save
-            if (noti instanceof UpNotification) {
-
-                var rd = rp.getRankData(((UpNotification) noti).getBattleType());
-                int up = ((UpNotification) noti).getPointUp(p);
-
-                var rtbefore = rd.getType();
-                var rgbefore = rd.getGrade();
-
-                rd.addPoint(up);
-
-                if (rd.getGrade() != rgbefore || rd.getType() != rtbefore) {
-                    Bukkit.getScheduler().runTaskLaterAsynchronously(SkyBattleClient.get(), () -> {
-                        p.sendTitle("§e§lThăng hạng!", Utils.getRankDisplay(new RankData(0, rtbefore, rgbefore)) + " >> §r" + Utils.getRankDisplay(rd));
-                        p.playSound(p.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 1, 1);
-                    }, 20);
-                }
-            }
-            else if (noti instanceof DownNotification) {
-                var rd = rp.getRankData(((DownNotification) noti).getBattleType());
-                int down = ((DownNotification) noti).getPointDown(p);
-
-                var rtbefore = rd.getType();
-                var rgbefore = rd.getGrade();
-
-                rd.subtractPoint(down);
-
-                if (rd.getGrade() != rgbefore || rd.getType() != rtbefore) {
-                    Bukkit.getScheduler().runTaskLaterAsynchronously(SkyBattleClient.get(), () -> {
-                        p.sendTitle("§c§lGiáng hạng", Utils.getRankDisplay(new RankData(0, rtbefore, rgbefore)) + " >> §r" + Utils.getRankDisplay(rd));
-                        p.playSound(p.getLocation(), Sound.ENTITY_GHAST_SCREAM, 1, 1);
-                    }, 20);
-                }
-            }
-
-            rp.save();
+            RankedPlayers.doNoti(p.getName());
         }, 50);
     }
 

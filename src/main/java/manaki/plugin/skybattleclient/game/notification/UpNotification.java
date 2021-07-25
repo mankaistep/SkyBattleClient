@@ -1,20 +1,20 @@
 package manaki.plugin.skybattleclient.game.notification;
 
+import manaki.plugin.skybattleclient.game.PlayerResult;
 import manaki.plugin.skybattleclient.game.notification.i.Notificatable;
 import manaki.plugin.skybattleclient.gui.room.BattleType;
 import manaki.plugin.skybattleclient.rank.player.RankedPlayers;
-import manaki.plugin.skybattleclient.util.Utils;
 import org.bukkit.Sound;
-import org.bukkit.entity.Bat;
 import org.bukkit.entity.Player;
 
-public class UpNotification implements Notificatable {
+public class UpNotification extends Notificatable {
 
     private final BattleType battleType;
     private final int top;
     private final boolean isWinner;
 
-    public UpNotification(BattleType battleType, int top, boolean isWinner) {
+    public UpNotification(PlayerResult pr, BattleType battleType, int top, boolean isWinner) {
+        super(pr);
         this.battleType = battleType;
         this.top = top;
         this.isWinner = isWinner;
@@ -28,15 +28,15 @@ public class UpNotification implements Notificatable {
         return top;
     }
 
-    public int getPointUp(Player p) {
-        var rp = RankedPlayers.get(p.getName());
+    public int getPointUp(String name) {
+        var rp = RankedPlayers.get(name);
         var rd = rp.getRankData(battleType);
         return RankedPlayers.calPointUp(this.top, rd.getType().getPointUp(), isWinner);
     }
 
     @Override
     public void show(Player p) {
-        int up = getPointUp(p);
+        int up = getPointUp(p.getName());
 
         if (!isWinner) {
             p.sendMessage("§2[§a/skybattle§2] §aĐạt top " + top + ", cộng " + up + " điểm xếp hạng");
