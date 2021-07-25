@@ -44,9 +44,10 @@ public class RankedPlayers {
         data.remove(name);
     }
 
-    public static int calPointUp(int top, int base) {
+    public static int calPointUp(int top, int base, boolean isWinner) {
         int r = base;
         for (int i = 0 ; i < (4 - top) ; i++) r *= 1.2;
+        if (isWinner) r *= 1.2;
         return r;
     }
 

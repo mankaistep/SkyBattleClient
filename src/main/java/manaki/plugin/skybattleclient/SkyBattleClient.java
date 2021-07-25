@@ -1,11 +1,11 @@
 package manaki.plugin.skybattleclient;
 
+import com.google.gson.GsonBuilder;
 import manaki.plugin.skybattleclient.command.AdminCommand;
 import manaki.plugin.skybattleclient.command.PlayerCommand;
 import manaki.plugin.skybattleclient.executor.Executor;
-import manaki.plugin.skybattleclient.game.GameResult;
 import manaki.plugin.skybattleclient.game.Notifications;
-import manaki.plugin.skybattleclient.game.notification.AfkNotification;
+import manaki.plugin.skybattleclient.game.PlayerResult;
 import manaki.plugin.skybattleclient.game.notification.DownNotification;
 import manaki.plugin.skybattleclient.game.notification.UpNotification;
 import manaki.plugin.skybattleclient.gui.holder.GUIHolder;
@@ -16,6 +16,7 @@ import manaki.plugin.skybattleclient.placeholder.RankPlaceholder;
 import manaki.plugin.skybattleclient.rank.player.RankedPlayers;
 import manaki.plugin.skybattleclient.rank.reward.RankRewards;
 import manaki.plugin.skybattleclient.request.util.Requests;
+import mk.plugin.santory.utils.Tasks;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -26,7 +27,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.util.Map;
 
 public class SkyBattleClient extends JavaPlugin implements @NotNull PluginMessageListener {
 
@@ -101,7 +101,7 @@ public class SkyBattleClient extends JavaPlugin implements @NotNull PluginMessag
                 p.setMetadata("skybattle-quit", new FixedMetadataValue(SkyBattleClient.get(), ""));
                 Bukkit.getScheduler().runTaskLater(SkyBattleClient.get(), () -> {
                     p.removeMetadata("skybattle-quit", SkyBattleClient.get());
-                }, 100);
+                }, 200);
 
                 SkyBattleClient.get().getLogger().info("Added tag to " + name);
             }, 20);
@@ -109,45 +109,23 @@ public class SkyBattleClient extends JavaPlugin implements @NotNull PluginMessag
         }
 
         // Battle result
-        if (type.equalsIgnoreCase("game-result")) {
-            var br = GameResult.parse(data);
-            BattleType bt = BattleType.parse(br.getType());
+        if (type.equalsIgnoreCase("skybattle-player-result")) {
+            String finalData = data;
+            Tasks.async(() -> {
+                var pr = new GsonBuilder().create().fromJson(finalData, PlayerResult.class);
+                BattleType bt = BattleType.parse(pr.getType());
 
-            // Afk players = top 8
-            for (String name : br.getAfks()) {
-                var rp = RankedPlayers.get(name);
-                var rd = rp.getRankData(bt);
+                var name = pr.getName();
+                var top = pr.getTop();
 
-                // Subtract
-                int down = RankedPlayers.calPointDown(8, rd.getType().getPointDown());
-                rd.subtractPoint(down);
-                rp.save();
-
-                // Pending noti
-                Notifications.add(name, new AfkNotification(down));
-            }
-
-            // Top
-            for (Map.Entry<String, Integer> e : br.getTops().entrySet()) {
-                var name = e.getKey();
-                var top = e.getValue();
-
-                var rp = RankedPlayers.get(name);
-                var rd = rp.getRankData(bt);
 
                 // Add or subtract
-                if (top >= 4) {
-                    int up = RankedPlayers.calPointUp(top, rd.getType().getPointUp());
-                    rd.addPoint(up);
-                    Notifications.add(name, new UpNotification(top, up));
+                if (top <= 4) {
+                    Notifications.add(name, new UpNotification(bt, top, pr.isWinner()));
                 }
-                else {
-                    int down = RankedPlayers.calPointDown(top, rd.getType().getPointDown());
-                    rd.subtractPoint(down);
-                    Notifications.add(name, new DownNotification(top, down));
-                }
-                rp.save();
-            }
+                else Notifications.add(name, new DownNotification(bt, top));
+
+            });
         }
     }
 }

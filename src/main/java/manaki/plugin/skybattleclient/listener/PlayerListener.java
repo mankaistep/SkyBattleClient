@@ -2,11 +2,15 @@ package manaki.plugin.skybattleclient.listener;
 
 import manaki.plugin.skybattleclient.SkyBattleClient;
 import manaki.plugin.skybattleclient.game.Notifications;
+import manaki.plugin.skybattleclient.game.notification.DownNotification;
+import manaki.plugin.skybattleclient.game.notification.UpNotification;
 import manaki.plugin.skybattleclient.gui.*;
 import manaki.plugin.skybattleclient.gui.holder.GUIHolder;
 import manaki.plugin.skybattleclient.gui.room.Rooms;
+import manaki.plugin.skybattleclient.rank.RankData;
 import manaki.plugin.skybattleclient.rank.player.RankedPlayers;
 import manaki.plugin.skybattleclient.rank.reward.RankRewards;
+import manaki.plugin.skybattleclient.util.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -23,7 +27,51 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onJoinNoti(PlayerJoinEvent e) {
         var p = e.getPlayer();
-        Notifications.show(p);
+        if (!Notifications.has(p.getName())) return;
+        Bukkit.getScheduler().runTaskLaterAsynchronously(SkyBattleClient.get(), () -> {
+            var noti = Notifications.get(p);
+            var rp = RankedPlayers.get(p.getName());
+
+            // Show
+            Notifications.show(p);
+
+            // Save
+            if (noti instanceof UpNotification) {
+
+                var rd = rp.getRankData(((UpNotification) noti).getBattleType());
+                int up = ((UpNotification) noti).getPointUp(p);
+
+                var rtbefore = rd.getType();
+                var rgbefore = rd.getGrade();
+
+                rd.addPoint(up);
+
+                if (rd.getGrade() != rgbefore || rd.getType() != rtbefore) {
+                    Bukkit.getScheduler().runTaskLaterAsynchronously(SkyBattleClient.get(), () -> {
+                        p.sendTitle("§e§lThăng hạng!", Utils.getRankDisplay(new RankData(0, rtbefore, rgbefore)) + " >> §r" + Utils.getRankDisplay(rd));
+                        p.playSound(p.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 1, 1);
+                    }, 20);
+                }
+            }
+            else if (noti instanceof DownNotification) {
+                var rd = rp.getRankData(((DownNotification) noti).getBattleType());
+                int down = ((DownNotification) noti).getPointDown(p);
+
+                var rtbefore = rd.getType();
+                var rgbefore = rd.getGrade();
+
+                rd.subtractPoint(down);
+
+                if (rd.getGrade() != rgbefore || rd.getType() != rtbefore) {
+                    Bukkit.getScheduler().runTaskLaterAsynchronously(SkyBattleClient.get(), () -> {
+                        p.sendTitle("§c§lGiáng hạng", Utils.getRankDisplay(new RankData(0, rtbefore, rgbefore)) + " >> §r" + Utils.getRankDisplay(rd));
+                        p.playSound(p.getLocation(), Sound.ENTITY_GHAST_SCREAM, 1, 1);
+                    }, 20);
+                }
+            }
+
+            rp.save();
+        }, 50);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

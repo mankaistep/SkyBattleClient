@@ -5,6 +5,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import manaki.plugin.skybattleclient.SkyBattleClient;
+import manaki.plugin.skybattleclient.gui.icon.Icons;
+import manaki.plugin.skybattleclient.gui.room.GameType;
 import manaki.plugin.skybattleclient.gui.room.Room;
 import manaki.plugin.skybattleclient.gui.room.team.TeamIcon;
 import manaki.plugin.skybattleclient.request.JoinRequest;
@@ -23,6 +25,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -51,6 +54,13 @@ public class Executor {
         // Get data
         var players = room.getTeamPlayers();
         var battleId = room.getBattleId();
+
+        // Random
+        if (battleId == null) {
+            var l = Lists.newArrayList(Icons.BATTLE_ICONS.keySet());
+            battleId = l.get(new Random().nextInt(l.size()));
+        }
+
         List<Team> teams = Lists.newArrayList();
 
         // NULL add
@@ -76,7 +86,7 @@ public class Executor {
         }
 
         // Send
-        var sr = new StartRequest(battleId, teams, "");
+        var sr = new StartRequest(battleId, teams, "ranked:" + (room.getGameType() == GameType.RANKED));
         sendStart(sr);
     }
 

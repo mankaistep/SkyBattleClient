@@ -39,7 +39,8 @@ public class AdminCommand implements CommandExecutor {
                 List<Team> teams = Lists.newArrayList();
 
                 // Parse
-                var ts = args[2];
+                boolean isRanked = Boolean.parseBoolean(args[2]);
+                var ts = args[3];
                 for (String ps : ts.split(";")) {
                     List<TeamPlayer> players = Lists.newArrayList();
                     for (String pn : ps.split(":")) {
@@ -55,7 +56,7 @@ public class AdminCommand implements CommandExecutor {
 
                 // Send
                 sender.sendMessage("§aSent!");
-                plugin.getExecutor().sendStart(new StartRequest(id, teams, ""));
+                plugin.getExecutor().sendStart(new StartRequest(id, teams, "ranked:" + isRanked));
             }
 
             else if (args[0].equalsIgnoreCase("join")) {
@@ -100,7 +101,7 @@ public class AdminCommand implements CommandExecutor {
     public void sendHelp(CommandSender sender) {
         sender.sendMessage("");
         sender.sendMessage("§a/skybattleclient(sbc) reload");
-        sender.sendMessage("§a/skybattleclient(sbc) start <battleId> <player1>:<player2>;<player3>:<player4>");
+        sender.sendMessage("§a/skybattleclient(sbc) start <battleId> <isRanked> <player1>:<player2>;<player3>:<player4>");
         sender.sendMessage("§a/skybattleclient(sbc) join <player>");
         sender.sendMessage("§a/skybattleclient(sbc) addpoint <battleType(V1,V2,V3) <player> <point>");
         sender.sendMessage("§a/skybattleclient(sbc) subtractpoint <battleType(V1,V2,V3) <player> <point>");

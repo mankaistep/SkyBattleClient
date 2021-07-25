@@ -1,7 +1,6 @@
 package manaki.plugin.skybattleclient.util;
 
 import manaki.plugin.skybattleclient.SkyBattleClient;
-import manaki.plugin.skybattleclient.gui.icon.Icons;
 import manaki.plugin.skybattleclient.rank.RankData;
 import manaki.plugin.skybattleclient.rank.RankGrade;
 import manaki.plugin.skybattleclient.rank.RankType;
@@ -14,6 +13,10 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Random;
 
 public class Utils {
+
+    public static String getRankDisplay(RankData rd) {
+        return rd.getType().getIcon() + rd.getType().getColor() + "§l" + rd.getGrade().name();
+    }
 
     public static int toPoint(RankType t, RankGrade g, int point) {
         return (t.getValue() - 1) * 400 + (4 - g.getValue()) * 100 + point;
