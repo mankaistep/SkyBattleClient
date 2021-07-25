@@ -3,13 +3,11 @@ package manaki.plugin.skybattleclient.gui;
 import com.google.common.collect.Lists;
 import manaki.plugin.skybattleclient.SkyBattleClient;
 import manaki.plugin.skybattleclient.gui.holder.GUIHolder;
-import manaki.plugin.skybattleclient.gui.room.GameType;
 import manaki.plugin.skybattleclient.gui.room.Rooms;
 import manaki.plugin.skybattleclient.util.Utils;
 import mk.plugin.santory.utils.ItemStackManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
@@ -21,19 +19,17 @@ import java.util.List;
 
 public class RoomSelectGUI {
 
-    private static final int NORMAL_BUTTON_SLOT = 2;
-    private static final int RANKED_BUTTON_SLOT = 4;
+    private static final int CREATE_BUTTON_SLOT = 2;
     private static final int EXIT_BUTTON_SLOT = 6;
     private static final List<Integer> ROOM_SLOTS = Lists.newArrayList(19, 20, 21, 22, 23, 24, 25, 28, 29, 30, 31, 32, 33, 34, 37, 38, 39, 40, 41, 42, 43);
 
-    public static void open(Player player, String battleId) {
-        Inventory inv = Bukkit.createInventory(new RoomGUIHolder(battleId), 54, "§0§lCHỌN PHÒNG");
+    public static void open(Player player) {
+        Inventory inv = Bukkit.createInventory(new RoomGUIHolder(), 54, "§0§lCHỌN PHÒNG");
         player.openInventory(inv);
 
         Bukkit.getScheduler().runTaskAsynchronously(SkyBattleClient.get(), () -> {
             for (int i = 0 ; i < inv.getSize() ; i++) if (!ROOM_SLOTS.contains(i)) inv.setItem(i, Utils.getBackIcon());
-            inv.setItem(NORMAL_BUTTON_SLOT, getNormalCreateButton());
-            inv.setItem(RANKED_BUTTON_SLOT, getRankedCreateButton());
+            inv.setItem(CREATE_BUTTON_SLOT, getCreateButton());
             inv.setItem(EXIT_BUTTON_SLOT, getExitButton());
 
             // Slots
@@ -45,7 +41,7 @@ public class RoomSelectGUI {
                         return;
                     }
                     for (Integer slot : ROOM_SLOTS) inv.setItem(slot, null);
-                    var rooms = Rooms.getRooms(battleId);
+                    var rooms = Rooms.getRooms();
                     for (int i = 0; i < rooms.size(); i++) {
                         var room = rooms.get(i);
                         inv.setItem(ROOM_SLOTS.get(i), Rooms.getIcon(room, inv.getItem(ROOM_SLOTS.get(i))));
@@ -61,24 +57,20 @@ public class RoomSelectGUI {
         var holder = (RoomGUIHolder) e.getInventory().getHolder();
 
         if (slot == EXIT_BUTTON_SLOT) {
-            BattleSelectGUI.open(p);
+            MainGUI.open(p);
             return;
         }
 
-        if (slot == RANKED_BUTTON_SLOT) {
-            p.sendMessage("§cTính năng sắp ra mắt");
-            return;
-        }
 
-        if (slot == NORMAL_BUTTON_SLOT) {
-            TypeSelectGUI.open(p, holder.getBattleId(), GameType.NORMAL);
+        if (slot == CREATE_BUTTON_SLOT) {
+            CreateGUI.open(p);
             return;
         }
 
         if (ROOM_SLOTS.contains(slot)) {
             int index = ROOM_SLOTS.indexOf(slot);
-            if (Rooms.getRooms(holder.getBattleId()).size() <= index) return;
-            var room = Rooms.getRooms(holder.getBattleId()).get(index);
+            if (Rooms.getRooms().size() <= index) return;
+            var room = Rooms.getRooms().get(index);
 
             // Check in
             if (room.getPlayers().contains(p)) {
@@ -93,17 +85,10 @@ public class RoomSelectGUI {
         }
     }
 
-    private static ItemStack getNormalCreateButton() {
-        var is = new ItemStack(Material.IRON_BLOCK);
-        var ism = new ItemStackManager(SkyBattleClient.get(), is);
-        ism.setName("§c§lTạo phòng mới (Thường)");
-        return is;
-    }
-
-    private static ItemStack getRankedCreateButton() {
+    private static ItemStack getCreateButton() {
         var is = new ItemStack(Material.GOLD_BLOCK);
         var ism = new ItemStackManager(SkyBattleClient.get(), is);
-        ism.setName("§c§lTạo phòng mới (Hạng)");
+        ism.setName("§c§lTạo phòng mới");
         return is;
     }
 
@@ -111,25 +96,12 @@ public class RoomSelectGUI {
         var is = new ItemStack(Material.BARRIER);
         var ism = new ItemStackManager(SkyBattleClient.get(), is);
         ism.setName("§c§lThoát");
-        List<String> lore = Lists.newArrayList();
-        lore.add("§fThoát ra menu chọn chiến trường");
-        ism.setLore(lore);
         return is;
     }
 
 }
 
 class RoomGUIHolder implements GUIHolder {
-
-    private String battleId;
-
-    public RoomGUIHolder(String battleId) {
-        this.battleId = battleId;
-    }
-
-    public String getBattleId() {
-        return battleId;
-    }
 
     @Override
     public @NotNull Inventory getInventory() {

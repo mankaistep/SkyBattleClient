@@ -23,14 +23,14 @@ public class Rooms {
     public static final long START_COUNT = 10000;
     public static final long REMOVE_COUNT = 5000;
 
-    private static Map<String, List<Room>> rooms = Maps.newConcurrentMap();
+    private static List<Room> rooms = Lists.newArrayList();
 
     private static int lastId = 0;
 
     public static Room createRoom(String battleId, GameType gameType, BattleType battleType, Player creator) {
         lastId++;
         var room = new Room(lastId, battleId, battleType, gameType, creator);
-        getRooms(battleId).add(room);
+        getRooms().add(room);
 
         // Status check
         long start = System.currentTimeMillis();
@@ -103,67 +103,62 @@ public class Rooms {
     }
 
     public static boolean hasRoom(Player p) {
-        for (List<Room> list : rooms.values()) {
-            for (Room r : list) {
-                if (r.getPlayers().contains(p)) return true;
-            }
+        for (Room r : rooms) {
+            if (r.getPlayers().contains(p)) return true;
         }
         return false;
     }
 
     public static Room getRoom(Player p) {
-        for (List<Room> list : rooms.values()) {
-            for (Room r : list) {
-                if (r.getPlayers().contains(p)) return r;
-            }
+        for (Room r : rooms) {
+            if (r.getPlayers().contains(p)) return r;
         }
         return null;
     }
 
-    public static List<Room> getRooms(String battleId) {
-        if (!rooms.containsKey(battleId)) rooms.put(battleId, Lists.newArrayList());
-        return rooms.get(battleId);
+    public static List<Room> getRooms() {
+        return rooms;
     }
 
     public static void removeRoom(Room room) {
-        for (Map.Entry<String, List<Room>> e : rooms.entrySet()) {
-            e.getValue().remove(room);
-        }
+        rooms.remove(room);
     }
 
     public static void removePlayer(Player player) {
-        for (Map.Entry<String, List<Room>> e : rooms.entrySet()) {
-            for (Room room : e.getValue()) {
-                for (Map.Entry<TeamIcon, Set<Player>> e2 : room.getTeamPlayers().entrySet()) {
-                    e2.getValue().remove(player);
-                }
+        for (Room room : rooms) {
+            for (Map.Entry<TeamIcon, Set<Player>> e2 : room.getTeamPlayers().entrySet()) {
+                e2.getValue().remove(player);
             }
         }
     }
 
     public static ItemStack getIcon(Room room, ItemStack is) {
-        if (is == null) is = new ItemStack(Material.WHITE_BED);
+        String mname = room.getGameType() == GameType.NORMAL ? "BED" : "BANNER";
+        if (is == null) is = new ItemStack(Material.valueOf("WHITE_" + mname));
         var ism = new ItemStackManager(SkyBattleClient.get(), is);
         List<String> lore = Lists.newArrayList();
 
         if (room.canJoin()) {
             ism.setName("§a§lPhòng #" + room.getId());
-            is.setType(Material.LIME_BED);
+            is.setType(Material.valueOf("LIME_" + mname));
             lore.add("§2§oCó thể vào");
         }
         else if (room.isDeleting()) {
             ism.setName("§c§lPhòng #" + room.getId());
-            is.setType(Material.RED_BED);
+            is.setType(Material.valueOf("RED_" + mname));
             lore.add("§c§oXóa phòng sau §c§l§o" + (REMOVE_COUNT - (System.currentTimeMillis() - room.getDeleteCount())) / 1000 + "s");
         }
         else if (room.isCountdowning()) {
             ism.setName("§3§lPhòng #" + room.getId());
-            is.setType(Material.LIGHT_BLUE_BED);
+            is.setType(Material.valueOf("LIGHT_BLUE_" + mname));
             lore.add("§b§oĐếm ngược bắt đầu §b§l§o" + (START_COUNT - (System.currentTimeMillis() - room.getStartCount())) / 1000 + "s");
         }
 
         is.setAmount(Math.max(1, room.getPlayers().size()));
-        lore.add("");
+        if (room.getBattleId() != null) {
+            lore.add("§eMap: §f" + Icons.BATTLE_ICONS.get(room.getBattleId()).getName());
+        }
+        else lore.add("§eMap: §fNgẫu nhiên");
         lore.add("§eHình thức: §f" + room.getBattleType().getName());
         lore.add("§eLoại: §f" + room.getGameType().getName());
         lore.add("§eNgười chơi (" + room.getPlayers().size() + "/" + room.getMaxPlayers() + ")");

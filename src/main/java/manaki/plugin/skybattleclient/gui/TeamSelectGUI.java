@@ -41,7 +41,8 @@ public class TeamSelectGUI {
             TeamIcon.VIII, 34);
 
     public static void open(Player player, Room room) {
-        Inventory inv = Bukkit.createInventory(new TeamGUIHolder(room), 54, "§0§lPHÒNG #" + room.getId() + " | " + Icons.BATTLE_ICONS.get(room.getBattleId()).getName().toUpperCase());
+        String bname = room.getBattleId() != null ? Icons.BATTLE_ICONS.get(room.getBattleId()).getName().toUpperCase() : "NGẪU NHIÊN";
+        Inventory inv = Bukkit.createInventory(new TeamGUIHolder(room), 54, "§0§lPHÒNG #" + room.getId() + " | " + bname);
         player.openInventory(inv);
 
         Bukkit.getScheduler().runTaskAsynchronously(SkyBattleClient.get(), () -> {
@@ -50,7 +51,8 @@ public class TeamSelectGUI {
                 inv.setItem(i, Utils.getBackIcon());
             }
             inv.setItem(QUIT_SLOT, getExitButton());
-            inv.setItem(BATTLE_SLOT, Icons.BATTLE_ICONS.get(room.getBattleId()).getIcon());
+            if (room.getBattleId() != null) inv.setItem(BATTLE_SLOT, Icons.BATTLE_ICONS.get(room.getBattleId()).getIcon());
+            else inv.setItem(BATTLE_SLOT, MapGUI.getRandom());
 
             // Slots
             new BukkitRunnable() {
@@ -98,9 +100,8 @@ public class TeamSelectGUI {
 
         // Quit
         if (slot == QUIT_SLOT) {
-            var bid = holder.getRoom().getBattleId();
             Rooms.removePlayer(p);
-            RoomSelectGUI.open(p, bid);
+            RoomSelectGUI.open(p);
             return;
         }
 

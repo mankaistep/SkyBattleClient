@@ -44,8 +44,8 @@ public class TypeSelectGUI {
         TeamSelectGUI.open(p, room);
 
         // Broadcast
-        var bname = Icons.BATTLE_ICONS.get(room.getBattleId()).getName();
-        Utils.broadcast("§2[§a§l/skybattle§2] §aPhòng #" + room.getId() + " §fvới chiến trường §a" + bname + " §fđược tạo bởi §a" + p.getName());
+        String bname = room.getBattleId() != null ? Icons.BATTLE_ICONS.get(room.getBattleId()).getName().toUpperCase() : "Ngẫu nhiên";
+        Utils.broadcast("§2[§a§l/skybattle§2] §aPhòng #" + room.getId() + " (" + room.getGameType().getName() + ") §fvới chiến trường §a" + bname + " §fđược tạo bởi §a" + p.getName());
     }
 
     private static BattleType fromSlot(int slot) {

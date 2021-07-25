@@ -10,6 +10,7 @@ import manaki.plugin.skybattleclient.rank.RankType;
 import manaki.plugin.skybattleclient.rank.player.RankedPlayers;
 import manaki.plugin.skybattleclient.util.Utils;
 import manaki.plugin.skybattleclient.util.command.Command;
+import mk.plugin.santory.gui.GUI;
 import mk.plugin.santory.utils.Tasks;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -71,6 +72,21 @@ public class RankRewards {
         }
     }
 
+    // Slots
+    private static Map<Integer, BattleType> slots = Map.of(2, BattleType.V1, 4, BattleType.V2, 6, BattleType.V3);
+
+    public static void openSelectGUI(Player p) {
+        var inv = Bukkit.createInventory(new GUIHolderImpl(), 9, "§0§lCHỌN CHẾ ĐỘ");
+        p.openInventory(inv);
+
+        Bukkit.getScheduler().runTaskAsynchronously(SkyBattleClient.get(), () -> {
+            for (int i = 0 ; i < inv.getSize() ; i++) inv.setItem(i, Utils.getBackIcon());
+            slots.forEach((slot, d) -> {
+                inv.setItem(slot, d.buildIcon());
+            });
+        });
+    }
+
     public static void openGUI(Player p, BattleType bt) {
         var rp = RankedPlayers.get(p.getName());
         var rd = rp.getRankData(bt);
@@ -96,6 +112,17 @@ public class RankRewards {
             }
         });
     }
+
+    public static void onClickSelect(InventoryClickEvent e, Player p) {
+        if (!(e.getInventory().getHolder() instanceof GUIHolderImpl)) return;
+
+        int slot = e.getSlot();
+        if (slots.containsKey(slot)) {
+            var bt = slots.get(slot);
+            openGUI(p, bt);
+        }
+    }
+
 
     public static void onClick(InventoryClickEvent e, Player p) {
         if (!(e.getInventory().getHolder() instanceof RankGUIHolder)) return;
@@ -195,6 +222,14 @@ class RankGUIHolder implements GUIHolder {
     public BattleType getBattleType() {
         return bt;
     }
+
+    @Override
+    public @NotNull Inventory getInventory() {
+        return null;
+    }
+}
+
+class GUIHolderImpl implements GUIHolder {
 
     @Override
     public @NotNull Inventory getInventory() {

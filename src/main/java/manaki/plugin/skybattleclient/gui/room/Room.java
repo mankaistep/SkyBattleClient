@@ -12,7 +12,7 @@ public class Room {
 
     private final int id;
 
-    private final String battleId;
+    private String battleId;
     private final BattleType battleType;
     private final GameType gameType;
 

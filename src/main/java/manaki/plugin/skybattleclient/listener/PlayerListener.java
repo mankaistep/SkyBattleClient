@@ -2,10 +2,7 @@ package manaki.plugin.skybattleclient.listener;
 
 import manaki.plugin.skybattleclient.SkyBattleClient;
 import manaki.plugin.skybattleclient.game.Notifications;
-import manaki.plugin.skybattleclient.gui.BattleSelectGUI;
-import manaki.plugin.skybattleclient.gui.RoomSelectGUI;
-import manaki.plugin.skybattleclient.gui.TeamSelectGUI;
-import manaki.plugin.skybattleclient.gui.TypeSelectGUI;
+import manaki.plugin.skybattleclient.gui.*;
 import manaki.plugin.skybattleclient.gui.holder.GUIHolder;
 import manaki.plugin.skybattleclient.gui.room.Rooms;
 import manaki.plugin.skybattleclient.rank.player.RankedPlayers;
@@ -54,11 +51,14 @@ public class PlayerListener implements Listener {
         var p = (Player) e.getWhoClicked();
         p.playSound(p.getLocation(), Sound.BLOCK_WOODEN_BUTTON_CLICK_ON, 1, 1);
 
-        BattleSelectGUI.onClick(e, p);
+        MainGUI.onClick(e, p);
         RoomSelectGUI.onClick(e, p);
         TeamSelectGUI.onClick(e, p);
         TypeSelectGUI.onClick(e, p);
         RankRewards.onClick(e, p);
+        RankRewards.onClickSelect(e, p);
+        MapGUI.onClick(e, p);
+        CreateGUI.onClick(e, p);
     }
 
     @EventHandler
