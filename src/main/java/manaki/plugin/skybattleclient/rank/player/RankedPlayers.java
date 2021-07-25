@@ -118,16 +118,18 @@ public class RankedPlayers {
                         p.sendTitle("§c§lGiáng hạng", Utils.getRankDisplay(new RankData(0, rtbefore, rgbefore)) + " >> §r" + Utils.getRankDisplay(rd));
                         p.playSound(p.getLocation(), Sound.ENTITY_GHAST_SCREAM, 1, 1);
                     }, 20);
-
-                    Bukkit.getScheduler().runTask(SkyBattleClient.get(), () -> {
-                        // Call event
-                        Bukkit.getPluginManager().callEvent(new PlayerEndGameEvent(p, noti.getResult()));
-                    });
                 }
             }
         }
 
         rp.save();
+
+        if (p != null) {
+            Bukkit.getScheduler().runTask(SkyBattleClient.get(), () -> {
+                // Call event
+                Bukkit.getPluginManager().callEvent(new PlayerEndGameEvent(p, noti.getResult()));
+            });
+        }
     }
 
 }
