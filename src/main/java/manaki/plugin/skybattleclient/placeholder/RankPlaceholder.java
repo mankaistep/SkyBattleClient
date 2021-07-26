@@ -49,7 +49,7 @@ public class RankPlaceholder extends PlaceholderExpansion {
 
                 // return
                 var rd = rp.getRankData(bt);
-                return Utils.getRankDisplay(rd);
+                return "§r" + Utils.getRankDisplay(rd);
             }
         }
         catch (Exception e) {
