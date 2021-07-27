@@ -157,6 +157,7 @@ public class RankRewards {
                     Tasks.sync(() -> {
                         // Set taken
                         rp.addTakenReward(bt, reward.getId());
+                        rp.save();
 
                         // Execute cmds
                         for (Command cmd : reward.getRewards()) {
