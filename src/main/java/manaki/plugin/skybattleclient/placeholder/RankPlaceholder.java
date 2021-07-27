@@ -27,7 +27,25 @@ public class RankPlaceholder extends PlaceholderExpansion {
     @Override
     public String onPlaceholderRequest(Player player, @NotNull String s) {
         try {
-            if (s.contains("rank_point_")) {
+            if (s.equalsIgnoreCase("rank_point")) {
+                // Get max rank
+                BattleType bt = null;
+                int maxp = -1;
+                var rp = RankedPlayers.get(player.getName());
+                for (BattleType type : BattleType.values()) {
+                    var rd = rp.getRankData(type);
+                    var point = Utils.toPoint(rd.getType(), rd.getGrade(), rd.getPoint());
+                    if (point > maxp) {
+                        maxp = point;
+                        bt = type;
+                    }
+                }
+
+                // return
+                var rd = rp.getRankData(bt);
+                return Utils.toPoint(rd.getType(), rd.getGrade(), rd.getPoint()) + "";
+            }
+            else if (s.contains("rank_point_")) {
                 var bt = BattleType.valueOf(s.replace("rank_point_", "").toUpperCase());
                 var rp = RankedPlayers.get(player.getName());
                 var rd = rp.getRankData(bt);
