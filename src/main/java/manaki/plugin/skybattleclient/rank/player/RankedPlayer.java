@@ -6,6 +6,7 @@ import manaki.plugin.skybattleclient.gui.room.BattleType;
 import manaki.plugin.skybattleclient.rank.RankData;
 import manaki.plugin.skybattleclient.rank.RankGrade;
 import manaki.plugin.skybattleclient.rank.RankType;
+import manaki.plugin.skybattleclient.util.Utils;
 
 import java.util.Map;
 import java.util.Set;
@@ -41,6 +42,23 @@ public class RankedPlayer {
     public RankData getRankData(BattleType type) {
         if (!rankData.containsKey(type)) rankData.put(type, new RankData(0, RankType.BRONZE, RankGrade.IV));
         return rankData.get(type);
+    }
+
+    public RankData getHighestRank() {
+        // Get max rank
+        BattleType bt = null;
+        int maxp = -1;
+        for (BattleType type : BattleType.values()) {
+            var rd = this.getRankData(type);
+            var point = Utils.toPoint(rd.getType(), rd.getGrade(), rd.getPoint());
+            if (point > maxp) {
+                maxp = point;
+                bt = type;
+            }
+        }
+
+        // return
+        return this.getRankData(bt);
     }
 
     public Map<BattleType, Set<String>> getTakenRewards() {

@@ -4,7 +4,9 @@ import com.google.common.collect.Lists;
 import manaki.plugin.skybattleclient.SkyBattleClient;
 import manaki.plugin.skybattleclient.gui.holder.GUIHolder;
 import manaki.plugin.skybattleclient.gui.icon.Icons;
+import manaki.plugin.skybattleclient.gui.room.BattleType;
 import manaki.plugin.skybattleclient.gui.room.Rooms;
+import manaki.plugin.skybattleclient.rank.player.RankedPlayers;
 import manaki.plugin.skybattleclient.rank.reward.RankRewards;
 import manaki.plugin.skybattleclient.request.JoinRequest;
 import mk.plugin.santory.utils.ItemStackManager;
@@ -38,13 +40,15 @@ public class MainGUI {
         }
 
         // Open
-        Inventory inv = Bukkit.createInventory(new MainGUIHolder(), 18, "§0§lSKYBATTLE");
+        var rd = RankedPlayers.get(player.getName()).getHighestRank();
+        var line = rd.getType().getName() + " " + rd.getGrade() + " " + rd.getPoint() + " điểm";
+        Inventory inv = Bukkit.createInventory(new MainGUIHolder(), 18, "§0§lSKYBATTLE - " + line);
         player.openInventory(inv);
         player.playSound(player.getLocation(), Sound.BLOCK_WOODEN_BUTTON_CLICK_ON, 1, 1);
 
         Bukkit.getScheduler().runTaskAsynchronously(SkyBattleClient.get(), () -> {
             inv.setItem(HELP_BUTTON, getHelpButton());
-            inv.setItem(RULE_BUTTON, getRuleButton());
+            inv.setItem(RULE_BUTTON, getRuleButton(player));
             inv.setItem(SPEC_BUTTON, getSpecButton());
             inv.setItem(CREATE_BUTTON, getCreateButton());
             inv.setItem(JOIN_BUTTON, getJoinButton());
@@ -104,7 +108,7 @@ public class MainGUI {
         return is;
     }
 
-    public static ItemStack getRuleButton() {
+    public static ItemStack getRuleButton(Player p) {
         var is = new ItemStack(Material.GLASS_PANE);
         var ism = new ItemStackManager(SkyBattleClient.get(), is);
         ism.setModelData(8);
@@ -112,7 +116,15 @@ public class MainGUI {
         List<String> lore = Lists.newArrayList();
         lore.add("§61. §fĐể thắng, bạn phải hạ trùm cuối và toàn bộ địch");
         lore.add("§62. §fĐể mở tiệm rèn, bạn phải tìm §eCái đe §frồi bấm vào");
-        lore.add("§63. §fTrên đảo bạn luôn có 3 rương");
+        lore.add("");
+        lore.add("§a§lXếp hạng");
+
+        var rp = RankedPlayers.get(p.getName());
+        for (BattleType bt : BattleType.values()) {
+            var rd1 = rp.getRankData(bt);
+            lore.add("§f" + rd1.getType().getIcon() + rd1.getType().getColor() + " " + rd1.getType().getName() + " " + rd1.getGrade() + " " + rd1.getPoint() + " điểm §f(" + bt.getName() + ")");
+        }
+
         ism.setLore(lore);
 
         return is;
