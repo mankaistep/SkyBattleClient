@@ -27,8 +27,8 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onJoinNoti(PlayerJoinEvent e) {
         var p = e.getPlayer();
-        if (!Notifications.has(p.getName())) return;
         Bukkit.getScheduler().runTaskLaterAsynchronously(SkyBattleClient.get(), () -> {
+            if (!Notifications.has(p.getName())) return;
             RankedPlayers.doNoti(p.getName());
         }, 50);
     }

@@ -38,7 +38,7 @@ public class UpNotification extends Notificatable {
     public void show(Player p) {
         int up = getPointUp(p.getName());
 
-        if (!isWinner) {
+        if (top != 1) {
             p.sendMessage("§2[§a/skybattle§2] §aĐạt top " + top + ", cộng " + up + " điểm xếp hạng");
             p.sendTitle("§a§lTOP #" + top, "§a+" + up + " điểm xếp hạng", 5, 80, 20);
         }

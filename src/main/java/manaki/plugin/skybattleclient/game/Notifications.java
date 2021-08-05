@@ -1,7 +1,10 @@
 package manaki.plugin.skybattleclient.game;
 
+import co.aikar.util.JSONUtil;
 import com.google.common.collect.Maps;
 import manaki.plugin.skybattleclient.game.notification.i.Notificatable;
+import manaki.plugin.skybattleclient.rank.player.RankedPlayers;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
@@ -16,6 +19,11 @@ public class Notifications {
 
     public static void add(String name, Notificatable noti) {
         data.put(name, noti);
+
+        var p = Bukkit.getPlayer(name);
+        if (p != null) {
+            RankedPlayers.doNoti(p.getName());
+        }
     }
 
     public static boolean has(String name) {

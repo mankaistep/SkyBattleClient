@@ -129,7 +129,6 @@ public class SkyBattleClient extends JavaPlugin implements @NotNull PluginMessag
                 var name = pr.getName();
                 var top = pr.getTop();
 
-
                 // Add or subtract
                 if (top <= 4) {
                     Notifications.add(name, new UpNotification(pr, bt, top, pr.isWinner()));
