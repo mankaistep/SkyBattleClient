@@ -78,13 +78,13 @@ public class Rooms {
                             p.sendTitle("", "§aĐang bắt đầu...", 0, 100, 0);
                         }
 
-                        // Start
-                        SkyBattleClient.get().getExecutor().sendStart(room);
-
                         // Broadcast
                         for (Player p : Bukkit.getOnlinePlayers()) {
                             p.sendMessage("§2[§a§l/skybattle§2] §aPhòng #" + room.getId() + " §fvới chiến trường §a" + Icons.BATTLE_ICONS.get(room.getBattleId()).getName() + " §fđã bắt đầu với §a" + room.getPlayers().size() + " người chơi!");
                         }
+
+                        // Start
+                        SkyBattleClient.get().getExecutor().sendStart(room);
 
                         // Remove room
                         room.setDelete(true);
